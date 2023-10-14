@@ -16,6 +16,7 @@ const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
+// Start express app
 const app = express();
 
 // Specifying our Template Enging (as Pug) for server-side rendering
