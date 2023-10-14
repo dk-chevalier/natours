@@ -50,7 +50,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   // send welcome email when user signs up
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(url);
+  // console.log(url);
   await new Email(newUser, url).sendWelcome();
 
   // // below we create a token using the jwt.sign(), where we pass in the payload, the secret, and some options (here we are creating a timeframe that the JWT will expire in, i.e. the user will be logged out...we have specified here as 90d, which is read as 90days)...the header is automatically created

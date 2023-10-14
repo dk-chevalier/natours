@@ -28,7 +28,7 @@ class APIFeatures {
     // 2) SORTING
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');
-      console.log(sortBy);
+      // console.log(sortBy);
       this.query = this.query.sort(sortBy); // because Tour.find() (above) returns a query, that means we can chain more methods to it, like the .sort() method....e.g. query would be ?sort=-price ...this will sort from highest price to lowest (without the '-' it will sort lowest to highest)
       // sort('price ratingsAverage') will sort according to price, and then any that have the same price will be sorted based on ratingsAverage....request url is: ?sort=price,ratingsAverage, and is handled like:
     } else {

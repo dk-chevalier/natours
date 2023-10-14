@@ -7,6 +7,7 @@ const mongoSanitise = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -140,6 +141,9 @@ app.use(
 ); // this clears up the query string, preventing duplicate fields apart from the ones in the whitelist that we specify to allow duplicates of
 
 // in each middleware function we have access to the request, response, and next function (which is the third argument we get access to)...we have to call the next() function, otherwise we wouldn't be able to move on and we woudl never send back a response to the client...this middleware applies to every request, because we don't specify a route
+
+// Returns a middleware function that compresses all the text that is sent to clients
+app.use(compression());
 
 // Test Middleware
 // below middleware adds an element to the object that has the time that the request was made, which can be useful if we have a function etc. that needs that data

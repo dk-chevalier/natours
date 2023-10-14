@@ -194,10 +194,10 @@ tourSchema.pre(/^find/, function (next) {
 });
 // .populate() is used to then populate an array that we have used to reference other documents (i.e. to fill that array with the documents that it is referencing) whenever we query...so this one is 'populating' the array in the guides property...can also pass in an object of options and use 'select' property to include/exclude certain properties in from the referenced documents in the response
 
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds`);
-  next();
-});
+// tourSchema.post(/^find/, function (docs, next) {
+//   // console.log(`Query took ${Date.now() - this.start} milliseconds`);
+//   next();
+// });
 
 // AGGREGATION MIDDLEWARE
 // tourSchema.pre('aggregate', function (next) {
