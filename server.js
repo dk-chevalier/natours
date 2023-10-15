@@ -44,3 +44,10 @@ process.on('unhandledRejection', (err) => {
   });
   // by clsoing the server, with server.close() first, and then shutting down the app after that (in the callback function), we give the server time to finish all the requests that are still pending/being handled at the time, and only after that the server is then killed
 });
+
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    console.log('💥 Process terminated!');
+  });
+});
