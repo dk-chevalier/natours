@@ -20,6 +20,8 @@ const viewRouter = require('./routes/viewRoutes');
 // Start express app
 const app = express();
 
+app.enable('trust proxy');
+
 // Specifying our Template Enging (as Pug) for server-side rendering
 app.set('view engine', 'pug');
 // setting the path to the 'views' folder, where our templates will be stored

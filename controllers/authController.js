@@ -12,18 +12,26 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
-  const cookieOptions = {
+  // const cookieOptions = {
+  //   expires: new Date(
+  //     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+  //   ),
+  //   httpOnly: true, // makes so cookie can't be access/modified in anyway by the browser
+  //   secure: req.secure || req.headers['x-forwarded-proto'] === 'https', // cookie only sent on an encrypted connection (i.e. when using https)....this won't work during development because we are only using http, not https
+  // };
+  // if (req.secure || req.headers['x-forwarded-proto'] === 'https')
+  //   cookieOptions.secure = true; // cookie only sent on an encrypted connection (i.e. when using https)....this won't work during development because we are only using http, not https
+
+  // use res.cookie() to send a cookie, and the arguments inside cookie() basically define the cookie, first we specify the name of the cookie, then the data we want to send in the cookie, and then some options for the cookie (if a new cookie is made with the same name as another one, then it will override the old one, i.e. delete the old one)
+  res.cookie('jwt', token, {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true, // makes so cookie can't be access/modified in anyway by the browser
-  };
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // cookie only sent on an encrypted connection (i.e. when using https)....this won't work during development because we are only using http, not https
-
-  // use res.cookie() to send a cookie, and the arguments inside cookie() basically define the cookie, first we specify the name of the cookie, then the data we want to send in the cookie, and then some options for the cookie (if a new cookie is made with the same name as another one, then it will override the old one, i.e. delete the old one)
-  res.cookie('jwt', token, cookieOptions);
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https', // cookie only sent on an encrypted connection (i.e. when using https)....this won't work during development because we are only using http, not https
+  });
 
   // Remove password from output
   user.password = undefined;
@@ -66,7 +74,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   // });
 
   // replaced above codes with below function:
-  createSendToken(newUser, 201, res);
+  createSendToken(newUser, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -86,7 +94,7 @@ exports.login = catchAsync(async (req, res, next) => {
   // by testing for both and giving one error, it means hackers don't know which is wrong
 
   // 3) If everything ok, send JWT to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 // to log users out we send a cookie with the same name as our JWT (i.e. the cookie we send when we log in), thus overwriting the cookie so it no longer has the token, and thus we can no longer identify the user as being logged in, thus logging the user out....so we are effectively deleting the cookie (because of the short expiration time we are giving it)
@@ -250,7 +258,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3) Update changedPasswordAt property for the user
   // 4) Log the user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 // Update Password for logged in users
@@ -274,5 +282,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 4) Log user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
