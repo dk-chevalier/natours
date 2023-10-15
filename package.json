@@ -8,7 +8,8 @@
   },
   "browserslist": "last 2 versions",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
     "watch": "esbuild ./public/js/index.js --bundle --outfile=./public/js/bundle.js --watch",
@@ -50,5 +51,8 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.0",
     "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
