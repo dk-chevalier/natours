@@ -16,6 +16,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingController = require('./controllers/bookingController');
 const viewRouter = require('./routes/viewRoutes');
 
 // Start express app
@@ -126,6 +127,12 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour!', // error message if they go over limiter
 });
 app.use('/api', limiter); // we have here set this to affect all routes that start with /api (i.e. that access our api)
+
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+); // we define this webhook-checkout route in the app.js here rather than in the booking router because in the handler function, when we receive the body from stripe, the stripe function we are going to use to read the body, needs the body in a raw form, not as json....but as soon as the request hits the below middleware (i.e. the body parser) it will be parsed and converted to json
 
 // Body parser, i.e. reading data from body into req.body
 // app.use allows us to use Middleware (i.e. a function that can modify the incoming request data....it stands between the request and the response...hence 'middle')...express.json() returns a function which is then added to the middleware stack
