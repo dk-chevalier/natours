@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -28,6 +29,21 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
+// Implement CORS (Cross Origin Resource Sharing)
+app.use(cors());
+// Access-Control-Allow-Origin header to allow * (i.e. allow all/everything, thus allowing all requests, no matter where they are coming from, thus letting everyone consume our api)
+// if we don't want to share the api, but have the api on one domain/subdomain and the frontend application on a different domain (e.g. back-end at api.natours.com, front-end at natours.com)
+// then we would do:
+// app.use(
+//   cors({
+//     origin: 'https://www.natours.com',
+//   }),
+// );
+
+// the above uses are just the first step to enabling cors, because they only apply to simple requests (i.e. get and post requests).....but non-simple requests (put, patch, delete, and requests that send cookies/use non-standard headers) require a 'pre-flight' phase (which the browser will automatically issue when there is one of these requests).....so before the real request actually happens, the browser first does an options request, in order to figure out if the actual request is safe to send....this means that on our server we need to respond to that options request (options requests are really just another http method, like get, post, delete, etc.)
+// so when we get one of these options requests on our server, we then have to send back the same access-control-allow-origin header, so then the browser will then know that the actual request is safe to perform and then executes the request
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors()); ....this is to enable it only one one specific route
 
 // Serving static files
 // serves static files to the browser (i.e. if you type in the local host with the right port, and then you can write the path to the file that you want to open, from the root folder which is the first argument passed in...e.g., below is in the public folder....so can type in 127.0.0.1:3000/overview.html to open the overview.html file on the browser)
